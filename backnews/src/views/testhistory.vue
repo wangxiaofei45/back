@@ -8,7 +8,6 @@
 		height: 60px;
 		line-height: 60px;
 	}
-	
 	.answer {
 		margin-top: 15px;
 	}
@@ -19,12 +18,12 @@
 			{{this.$route.params.title}}
 		</div>
 		<Form ref="formDynamic" :model="formDynamic" label-position="right" :label-width="100" style="width: 800px;margin: 0 auto;">
-			<FormItem v-for="(item, index) in formDynamic.items" v-if="item.status" :key="index" :label="'题目' + item.index" :prop="'items.' + index + '.value'" :rules="{required: true, message: '题目' + item.index +'不能为空', trigger: 'blur'}">
+			<FormItem v-for="(item, index) in formDynamic.items"  :key="index" :label="'题目' + (index+1)" :prop="'items.' + index + '.value'" :rules="{required: true, message: '题目' + item.index +'不能为空', trigger: 'blur'}">
 				<Row>
 					<Col span="21">
 					<Row type="flex" justify="center" align="middle">
 						<Col span="24">
-						<Input type="text" v-model="item.value" placeholder="输入题目"></Input>
+						<Input type="text" v-model="item.value" clearable  placeholder="输入题目"></Input>
 						</Col>
 						<Col span="24">
 						<Row style="margin-top: 15px;">
@@ -71,24 +70,19 @@
 			</FormItem>
 			<FormItem>
 				<Button type="primary" @click="handleSubmit('formDynamic')">提交</Button>
-				<Button type="ghost" @click="handleReset('formDynamic')" style="margin-left: 8px">重输</Button>
 			</FormItem>
 		</Form>
 	</div>
 </template>
-
 <script>
 	export default {
 		data() {
 			return {
-				title:"",
-				value11: '',
-				index: 1,
+				title:"",//初始化修改标题
 				formDynamic: {
 					items: [{
 						value: '',
 						index: 1,
-						status: 1,
 						answer: {
 							A: '',
 							B: '',
@@ -97,38 +91,39 @@
 							success:'',
 						}
 					}]
-				}
+				},
 			}
 		},
 		methods: {
+			//提交
 			handleSubmit(name) {
 				this.$refs[name].validate((valid) => {
 					if(valid) {
+						console.log(valid);
 						this.$Message.success('Success!');
 					} else {
 						this.$Message.error('Fail!');
 					}
 				})
 			},
-			handleReset(name) {
-				this.$refs[name].resetFields();
-			},
+			//添加
 			handleAdd() {
 				this.index++;
 				this.formDynamic.items.push({
 					value: '',
 					index: this.index,
-					status: 1,
 					answer: {
 						A: '',
 						B: '',
 						C: '',
-						D: ''
+						D: '',
+						success:'',
 					}
 				});
 			},
+			//删除
 			handleRemove(index) {
-				this.formDynamic.items[index].status = 0;
+				this.formDynamic.items.splice(index, 1);
 			}
 		}
 	}
